@@ -5,11 +5,25 @@ export async function generateStaticParams() {
   return res.data.data.data.map((p) => ({ id: p.id.toString() }));
 }
 
+export async function generateMetadata({ params }) {
+  const res = await baseUrl.get("all/product/get");
+  const product = res.data.data.data.find((p) => p.id.toString() === params.id);
+
+  return {
+    title: `${product?.name || "Product"} | CloudCore`,
+    description: product?.description || "Check out this product from CloudCore.",
+  };
+}
+
 export default async function SingleProduct({ params }) {
   const { id } = params;
 
   const res = await baseUrl.get("all/product/get");
   const product = res.data.data.data.find((p) => p.id.toString() === id);
+
+  if (!product) {
+    return <div className="text-red-500 p-10">Product not found</div>;
+  }
 
   const imageUrl = `https://admin.refabry.com/storage/product/${product.image}`;
 
