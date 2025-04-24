@@ -1,22 +1,19 @@
 import baseUrl from "@/utils/baseUrl";
 
-export async function generateStaticParams() {
-  const res = await baseUrl.get("all/product/get");
-  return res.data.data.data.map((p) => ({ id: p.id.toString() }));
-}
+// export async function generateMetadata({ params }) {
+//   const id = params.id.toString(); // ✅ Removed 'await'
 
-export async function generateMetadata({ params }) {
-  const res = await baseUrl.get("all/product/get");
-  const product = res.data.data.data.find((p) => p.id.toString() === params.id);
+//   const res = await baseUrl.get("all/product/get");
+//   const product = res.data.data.data.find((p) => p.id.toString() === id);
 
-  return {
-    title: `${product?.name || "Product"} | CloudCore`,
-    description: product?.description || "Check out this product from CloudCore.",
-  };
-}
+//   return {
+//     title: `${product?.name || "Product"} | CloudCore`,
+//     description: product?.description || "Check out this product from CloudCore.",
+//   };
+// }
 
 export default async function SingleProduct({ params }) {
-  const { id } = params;
+  const id = params.id.toString(); // ✅ Removed 'await'
 
   const res = await baseUrl.get("all/product/get");
   const product = res.data.data.data.find((p) => p.id.toString() === id);
