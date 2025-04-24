@@ -1,26 +1,24 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import baseUrl from "@/utils/baseUrl";
 
-// export async function generateMetadata({ params }) {
-//   const id = params.id.toString(); // ✅ Removed 'await'
+export default function SingleProduct() {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
 
-//   const res = await baseUrl.get("all/product/get");
-//   const product = res.data.data.data.find((p) => p.id.toString() === id);
+  useEffect(() => {
+    async function fetchData() {
+      const res = await baseUrl.get("all/product/get");
+      const prod = res.data.data.data.find((p) => p.id.toString() === id.toString());
+      setProduct(prod);
+    }
 
-//   return {
-//     title: `${product?.name || "Product"} | CloudCore`,
-//     description: product?.description || "Check out this product from CloudCore.",
-//   };
-// }
+    fetchData();
+  }, [id]);
 
-export default async function SingleProduct({ params }) {
-  const id = params.id.toString(); // ✅ Removed 'await'
-
-  const res = await baseUrl.get("all/product/get");
-  const product = res.data.data.data.find((p) => p.id.toString() === id);
-
-  if (!product) {
-    return <div className="text-red-500 p-10">Product not found</div>;
-  }
+  if (!product) return <div className="p-10">Loading...</div>;
 
   const imageUrl = `https://admin.refabry.com/storage/product/${product.image}`;
 
